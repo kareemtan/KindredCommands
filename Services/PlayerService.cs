@@ -15,6 +15,8 @@ internal class PlayerService
 	readonly Dictionary<ulong, PlayerData> steamPlayerCache = [];
 	readonly Dictionary<NetworkId, PlayerData> idPlayerCache = [];
 
+	EntityQuery userQuery;
+
 	internal bool TryFindSteam(ulong steamId, out PlayerData playerData)
 	{
 		return steamPlayerCache.TryGetValue(steamId, out playerData);
@@ -27,6 +29,11 @@ internal class PlayerService
 
 	internal PlayerService()
 	{
+		var entityQueryBuilder = new EntityQueryBuilder(Allocator.Temp)
+			.AddAll(new(Il2CppType.Of<User>(), ComponentType.AccessMode.ReadOnly));
+		userQuery = Core.EntityManager.CreateEntityQuery(ref entityQueryBuilder);
+		entityQueryBuilder.Dispose();
+
 		namePlayerCache.Clear();
 		steamPlayerCache.Clear();
 
@@ -110,18 +117,42 @@ internal class PlayerService
 
 		return true;
 	}
-	public static IEnumerable<Entity> GetUsersOnline()
+
+	public IEnumerable<Entity> GetPlayerCharacters(bool onlineOnly)
 	{
-		var entityQueryBuilder = new EntityQueryBuilder(Allocator.Temp)
-			.AddAll(new(Il2CppType.Of<User>(), ComponentType.AccessMode.ReadOnly));
-		NativeArray<Entity> _userEntities = Core.EntityManager.CreateEntityQuery(ref entityQueryBuilder).ToEntityArray(Allocator.Temp);
-		entityQueryBuilder.Dispose();
-		foreach (var entity in _userEntities)
+		foreach (var playerData in FindPlayers(onlineOnly: onlineOnly, requiresCharacter: true))
+		{
+			yield return playerData.CharEntity;
+		}
+	}
+
+	public IEnumerable<PlayerData> FindPlayers(bool onlineOnly = false, bool requiresCharacter = false)
+	{
+		var entities = userQuery.ToEntityArray(Allocator.Temp);
+		var userDatas = userQuery.ToComponentDataArray<User>(Allocator.Temp);
+		for (var i = 0; i < entities.Length; i++)
+		{
+			var userData = userDatas[i];
+			bool matchesOnlineStatus = !onlineOnly || userData.IsConnected;
+			bool matchesCharacterStatus = !requiresCharacter || !userData.LocalCharacter._Entity.Equals(Entity.Null);			
+			if (matchesOnlineStatus && matchesCharacterStatus)
+			{
+				yield return new PlayerData(userData.CharacterName, userData.PlatformId, userData.IsConnected, entities[i], userData.LocalCharacter._Entity);
+			}
+		}
+		entities.Dispose();
+		userDatas.Dispose();
+	}
+
+	public IEnumerable<Entity> GetUsersOnline()
+	{
+		var userEntities = userQuery.ToEntityArray(Allocator.Temp);
+		foreach (var entity in userEntities)
 		{
 			if (Core.EntityManager.Exists(entity) && entity.Read<User>().IsConnected)
 				yield return entity;
 		}
-		_userEntities.Dispose();
+		userEntities.Dispose();
 	}
 
 
