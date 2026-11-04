@@ -21,8 +21,11 @@ namespace KindredCommands.Services
 		readonly HashSet<Entity> flyingPlayers = [];
 		readonly HashSet<Entity> noAggroPlayers = [];
 		readonly HashSet<Entity> noBlooddrainPlayers = [];
+		readonly HashSet<Entity> noCrowdControlPlayers = [];
 		readonly HashSet<Entity> noDurabilityPlayers = [];
 		readonly HashSet<Entity> noCooldownPlayers = [];
+		readonly HashSet<Entity> noHeightCorrectionPlayers = [];
+		readonly HashSet<Entity> noMapCollisionPlayers = [];
 		readonly HashSet<Entity> immaterialPlayers = [];
 		readonly HashSet<Entity> invinciblePlayers = [];
 		readonly HashSet<Entity> shroudedPlayers = [];
@@ -39,8 +42,9 @@ namespace KindredCommands.Services
 			return playerAttackSpeed.ContainsKey(charEntity) || playerDamage.ContainsKey(charEntity) || playerHps.ContainsKey(charEntity) ||
 				playerSpeeds.ContainsKey(charEntity) || playerYield.ContainsKey(charEntity) ||
 				batVisionPlayers.Contains(charEntity) || flyingPlayers.Contains(charEntity) || 
-				noAggroPlayers.Contains(charEntity) || noBlooddrainPlayers.Contains(charEntity) || noDurabilityPlayers.Contains(charEntity) ||
-				noCooldownPlayers.Contains(charEntity) || immaterialPlayers.Contains(charEntity) || invinciblePlayers.Contains(charEntity) ||
+				noAggroPlayers.Contains(charEntity) || noBlooddrainPlayers.Contains(charEntity) || noCrowdControlPlayers.Contains(charEntity) || noDurabilityPlayers.Contains(charEntity) ||
+				noCooldownPlayers.Contains(charEntity) || noHeightCorrectionPlayers.Contains(charEntity) || noMapCollisionPlayers.Contains(charEntity) ||
+				immaterialPlayers.Contains(charEntity) || invinciblePlayers.Contains(charEntity) ||
 				includeShrouded && shroudedPlayers.Contains(charEntity) || sunInvulnPlayers.Contains(charEntity) ||
 				includeDaywalkers && daywalkerPlayers.Contains(charEntity);
 		}
@@ -99,6 +103,11 @@ namespace KindredCommands.Services
 
 			if (immaterialPlayers.Contains(charEntity))
 			{
+				// TODO 合并Lazarus-Draconium/KindredCommands的custom-
+				// 1.Buff_General_Immaterial
+				// Buffs.AddBuff(userEntity, charEntity, Prefabs.Buff_General_Immaterial, -1, true);
+
+				// 2.AB_Blood_BloodRite_Immaterial
 				Buffs.TryAddBuff(userEntity, charEntity, Prefabs.AB_Blood_BloodRite_Immaterial, -1, true);
 				if (BuffUtility.TryGetBuff(Core.EntityManager, charEntity, Prefabs.AB_Blood_BloodRite_Immaterial, out Entity immaterialBuffEntity))
 				{
@@ -109,6 +118,7 @@ namespace KindredCommands.Services
 			}
 			else
 			{
+				Buffs.RemoveBuff(charEntity, Prefabs.Buff_General_Immaterial);
 				Buffs.RemoveBuff(charEntity, Prefabs.AB_Blood_BloodRite_Immaterial);
 			}
 
@@ -122,6 +132,27 @@ namespace KindredCommands.Services
 				if (!equipment.IsEquipped(Prefabs.Item_Cloak_Main_ShroudOfTheForest, out var _))
 					Buffs.RemoveBuff(charEntity, Prefabs.EquipBuff_ShroudOfTheForest);
 			}
+
+			if (noCrowdControlPlayers.Contains(charEntity))
+			{
+				SetResistanceSettings(charEntity, Prefabs.BuffResistance_UberMobNoKnockbackOrGrab);
+			}
+			else
+			{
+				RestoreResistanceSettings(charEntity);
+			}
+
+			Core.StartCoroutine(RemoveAndAddCustomBuff(userEntity, charEntity));
+		}
+
+		IEnumerator RemoveAndAddCustomBuff(Entity userEntity, Entity charEntity)
+		{
+			Buffs.RemoveBuff(charEntity, Prefabs.BoostedBuff1);
+			Buffs.RemoveBuff(charEntity, Prefabs.BoostedBuff2);
+			while (BuffUtility.HasBuff(Core.EntityManager, charEntity, Prefabs.BoostedBuff1))
+				yield return null;
+			while (BuffUtility.HasBuff(Core.EntityManager, charEntity, Prefabs.BoostedBuff2))
+				yield return null;
 
 			Buffs.TryAddBuff(userEntity, charEntity, Prefabs.BoostedBuff1, -1, true);
 			Buffs.TryAddBuff(userEntity, charEntity, Prefabs.BoostedBuff2, -1, true);
@@ -149,9 +180,12 @@ namespace KindredCommands.Services
 			flyingPlayers.Remove(charEntity);
 			noAggroPlayers.Remove(charEntity);
 			noBlooddrainPlayers.Remove(charEntity);
+			noCrowdControlPlayers.Remove(charEntity);
 			noCooldownPlayers.Remove(charEntity);
 			if(noDurabilityPlayers.Remove(charEntity))
 				Core.TrackPlayerEquipment.StopTrackingPlayerForNoDurability(charEntity);
+			noHeightCorrectionPlayers.Remove(charEntity);
+			noMapCollisionPlayers.Remove(charEntity);
 			immaterialPlayers.Remove(charEntity);
 			invinciblePlayers.Remove(charEntity);
 			shroudedPlayers.Remove(charEntity);
@@ -299,6 +333,22 @@ namespace KindredCommands.Services
 			return noBlooddrainPlayers.Contains(charEntity);
 		}
 
+		public bool ToggleNoCrowdControl(Entity charEntity)
+		{
+			if (noCrowdControlPlayers.Contains(charEntity))
+			{
+				noCrowdControlPlayers.Remove(charEntity);
+				return false;
+			}
+			noCrowdControlPlayers.Add(charEntity);
+			return true;
+		}
+
+		public bool HasNoCrowdControl(Entity charEntity)
+		{
+			return noCrowdControlPlayers.Contains(charEntity);
+		}
+
 		public bool ToggleNoCooldown(Entity charEntity)
 		{
 			if (noCooldownPlayers.Contains(charEntity))
@@ -332,6 +382,38 @@ namespace KindredCommands.Services
 		public bool HasNoDurability(Entity charEntity)
 		{
 			return noDurabilityPlayers.Contains(charEntity);
+		}
+
+		public bool ToggleNoHeightCorrection(Entity charEntity)
+		{
+			if (noHeightCorrectionPlayers.Contains(charEntity))
+			{
+				noHeightCorrectionPlayers.Remove(charEntity);
+				return false;
+			}
+			noHeightCorrectionPlayers.Add(charEntity);
+			return true;
+		}
+
+		public bool HasNoHeightCorrection(Entity charEntity)
+		{
+			return noHeightCorrectionPlayers.Contains(charEntity);
+		}
+
+		public bool ToggleNoMapCollision(Entity charEntity)
+		{
+			if (noMapCollisionPlayers.Contains(charEntity))
+			{
+				noMapCollisionPlayers.Remove(charEntity);
+				return false;
+			}
+			noMapCollisionPlayers.Add(charEntity);
+			return true;
+		}
+
+		public bool HasNoMapCollision(Entity charEntity)
+		{
+			return noMapCollisionPlayers.Contains(charEntity);
 		}
 
 		public bool TogglePlayerImmaterial(Entity charEntity)
@@ -428,6 +510,24 @@ namespace KindredCommands.Services
 		public bool IsPlayerShrouded(Entity charEntity)
 		{
 			return shroudedPlayers.Contains(charEntity);
+		}
+
+		static void SetResistanceSettings(Entity charEntity, PrefabGUID settingsPrefab)
+		{
+			if (!charEntity.Has<BuffResistances>()) return;
+
+			var buffResistances = charEntity.Read<BuffResistances>();
+			buffResistances.SettingsEntity._Value = Core.PrefabCollectionSystem._PrefabGuidToEntityMap[settingsPrefab];
+			charEntity.Write(buffResistances);
+		}
+
+		static void RestoreResistanceSettings(Entity charEntity)
+		{
+			if (!charEntity.Has<BuffResistances>()) return;
+
+			var buffResistances = charEntity.Read<BuffResistances>();
+			buffResistances.SettingsEntity._Value = Core.PrefabCollectionSystem._PrefabGuidToEntityMap[buffResistances.InitialSettingGuid];
+			charEntity.Write(buffResistances);
 		}
 
 		public void UpdateBoostedBuff1(Entity buffEntity)
@@ -559,15 +659,24 @@ namespace KindredCommands.Services
 				buffModificationFlags |= (long)(BuffModificationTypes.DisableDynamicCollision | BuffModificationTypes.FlyOnlyMapCollision | BuffModificationTypes.IsFlying);
 			}
 
+			if (noHeightCorrectionPlayers.Contains(charEntity))
+			{
+				buffModificationFlags |= (long)(BuffModificationTypes.DisableHeightCorrection);
+			}
+
+			if (noMapCollisionPlayers.Contains(charEntity))
+			{
+				buffModificationFlags |= (long)(BuffModificationTypes.DisableMapCollision);
+			}
+
 			if (immaterialPlayers.Contains(charEntity))
 			{
-				buffModificationFlags |= (long)(BuffModificationTypes.DisableDynamicCollision | BuffModificationTypes.DisableMapCollision | BuffModificationTypes.IsVbloodGhost);
-
+				buffModificationFlags |= (long)(BuffModificationTypes.DisableDynamicCollision);
 			}
 
 			if (invinciblePlayers.Contains(charEntity))
 			{
-				buffModificationFlags |= (long)(BuffModificationTypes.Invulnerable | BuffModificationTypes.ImmuneToSun | BuffModificationTypes.CannotBeDisconnectDragged);
+				buffModificationFlags |= (long)(BuffModificationTypes.Invulnerable | BuffModificationTypes.ImmuneToSun | BuffModificationTypes.ImmuneToHazards | BuffModificationTypes.CannotBeDisconnectDragged);
 				foreach (var buff in invincibleBuffs)
 				{
 					modifyStatBuffer.Add(buff);
@@ -596,6 +705,9 @@ namespace KindredCommands.Services
 			Buffs.RemoveBuff(charEntity, Prefabs.BoostedBuff1);
 			Buffs.RemoveBuff(charEntity, Prefabs.BoostedBuff2);
 			Buffs.RemoveBuff(charEntity, Prefabs.AB_Blood_BloodRite_Immaterial);
+			Buffs.RemoveBuff(charEntity, Prefabs.Buff_General_Immaterial);
+
+			RestoreResistanceSettings(charEntity);
 
 			var equipment = charEntity.Read<Equipment>();
 			if (!equipment.IsEquipped(Prefabs.Item_Cloak_Main_ShroudOfTheForest, out var _) && BuffUtility.HasBuff(Core.EntityManager, charEntity, Prefabs.EquipBuff_ShroudOfTheForest))
@@ -698,9 +810,13 @@ namespace KindredCommands.Services
 					{
 						flyingPlayers.Add(charEntity);
 					}
+					if ((buffModificationFlagData.ModificationTypes & (long)BuffModificationTypes.DisableHeightCorrection) != 0)
+					{
+						noHeightCorrectionPlayers.Add(charEntity);
+					}
 					if ((buffModificationFlagData.ModificationTypes & (long)BuffModificationTypes.DisableMapCollision) != 0)
 					{
-						immaterialPlayers.Add(charEntity);
+						noMapCollisionPlayers.Add(charEntity);
 					}
 					if ((buffModificationFlagData.ModificationTypes & (long)BuffModificationTypes.Invulnerable) != 0)
 					{
@@ -713,12 +829,27 @@ namespace KindredCommands.Services
 				}
 			}
 
+			if (BuffUtility.HasBuff(Core.Server.EntityManager, charEntity, Prefabs.Buff_General_Immaterial))
+			{
+				immaterialPlayers.Add(charEntity);
+			}
+
 			if (BuffUtility.TryGetBuff(Core.Server.EntityManager, charEntity, Prefabs.EquipBuff_ShroudOfTheForest, out buffEntity))
 			{
 				var equipment = charEntity.Read<Equipment>();
 				if (!equipment.IsEquipped(Prefabs.Item_Cloak_Main_ShroudOfTheForest, out var _))
 				{
 					TogglePlayerShrouded(charEntity);
+				}
+			}
+
+			if (charEntity.Has<BuffResistances>())
+			{
+				var buffResistances = charEntity.Read<BuffResistances>();
+				if (Core.PrefabCollectionSystem._PrefabGuidToEntityMap.TryGetValue(Prefabs.BuffResistance_UberMobNoKnockbackOrGrab, out var uberMobEntity) &&
+					buffResistances.SettingsEntity._Value == uberMobEntity)
+				{
+					noCrowdControlPlayers.Add(charEntity);
 				}
 			}
 		}

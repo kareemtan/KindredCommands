@@ -6,7 +6,7 @@ namespace KindredCommands.Commands;
 
 public class AnnounceCommands
 {
-	[Command("time", description: "Reports the server time.")]
+	[Command("time", description: "Reports the server time.", adminOnly: true)]
     public static void GetTimeCommand(ChatCommandContext ctx)
     {
         var serverTime = DateTime.Now;
@@ -89,6 +89,13 @@ public class AnnounceCommands
 				sb.AppendLine("No scheduled announcements");
 
 			ctx.Reply(sb.ToString());
+		}
+
+		[Command("reload", description: "Reload announcements from the config file.", adminOnly: true)]
+		public static void ReloadAnnouncementsCommand(ChatCommandContext ctx)
+		{
+			Core.AnnouncementsService.ReloadAnnouncements();
+			ctx.Reply("Announcements reloaded from file.");
 		}
 
 		[Command("remove", "r", description: "Remove an announcement.", adminOnly: true)]
