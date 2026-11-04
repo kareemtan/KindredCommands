@@ -28,8 +28,10 @@ internal class GodCommands
 		Core.BoostedPlayerService.ToggleBatVision(charEntity);
 		Core.BoostedPlayerService.ToggleNoAggro(charEntity);
 		Core.BoostedPlayerService.ToggleNoBlooddrain(charEntity);
+		Core.BoostedPlayerService.ToggleNoCrowdControl(charEntity);
 		Core.BoostedPlayerService.ToggleNoCooldown(charEntity);
 		Core.BoostedPlayerService.ToggleNoDurability(charEntity);
+		Core.BoostedPlayerService.ToggleNoMapCollision(charEntity);
 		Core.BoostedPlayerService.TogglePlayerImmaterial(charEntity);
 		Core.BoostedPlayerService.TogglePlayerInvincible(charEntity);
 		Core.BoostedPlayerService.TogglePlayerShrouded(charEntity);
@@ -42,17 +44,26 @@ internal class GodCommands
 	[Command("mortal", adminOnly: true)]
 	public static void MortalCommand(ChatCommandContext ctx, OnlinePlayer player = null)
 	{
-		var charEntity = (player?.Value.CharEntity ?? ctx.Event.SenderCharacterEntity);
+		var charEntity = player?.Value.CharEntity ?? ctx.Event.SenderCharacterEntity;
+		var name = player?.Value.UserEntity.Read<User>().CharacterName ?? ctx.Event.User.CharacterName;
 
-		if (!Core.BoostedPlayerService.IsBoostedPlayer(charEntity) && !BuffUtility.HasBuff(Core.EntityManager, charEntity, Prefabs.BoostedBuff1)) return;
+		if (!Core.BoostedPlayerService.IsBoostedPlayer(charEntity) && !BuffUtility.HasBuff(Core.EntityManager, charEntity, Prefabs.BoostedBuff1))
+		{
+			ctx.Reply($"<color=white>{name}</color> has no god mode or boosts to remove");
+			return;
+		}
 
 		Core.BoostedPlayerService.RemoveBoostedPlayer(charEntity);
-
-		var name = player?.Value.UserEntity.Read<User>().CharacterName ?? ctx.Event.User.CharacterName;
 		ctx.Reply($"God mode and boosts removed from <color=white>{name}</color>");
 	}
 
 	static Dictionary<string, Vector3> positionBeforeSpectate = [];
+
+	static bool IsGhost(Unity.Entities.Entity buffEntity)
+	{
+		return buffEntity.Has<BuffModificationFlagData>() &&
+			(buffEntity.Read<BuffModificationFlagData>().ModificationTypes & (long)BuffModificationTypes.AbilityCastImpair) == 0;
+	}
 
 	[Command("spectate", adminOnly: true, description:"Toggles spectate on the target player")]
 	public static void SpectateCommand(ChatCommandContext ctx, OnlinePlayer player = null, bool returnToStart=true)
@@ -61,8 +72,13 @@ internal class GodCommands
 		var userEntity = player?.Value.UserEntity ?? ctx.Event.SenderUserEntity;
 		var name = userEntity.Read<User>().CharacterName;
 
-		if (BuffUtility.HasBuff(Core.EntityManager, charEntity, Prefabs.Admin_Observe_Invisible_Buff))
+		if (BuffUtility.TryGetBuff(Core.EntityManager, charEntity, Prefabs.Admin_Observe_Invisible_Buff, out var spectateBuff))
 		{
+			if (IsGhost(spectateBuff))
+			{
+				ctx.Reply($"<color=white>{name}</color> is in <color=yellow>Ghost</color> mode. Use .ghost to remove it.");
+				return;
+			}
 			if (returnToStart)
 			{
 				if (!positionBeforeSpectate.TryGetValue(name.ToString(), out var returnPos))
@@ -80,6 +96,37 @@ internal class GodCommands
 			Buffs.AddBuff(userEntity, charEntity, Prefabs.Admin_Observe_Invisible_Buff, -1);
 			positionBeforeSpectate.Add(name.ToString(), charEntity.Read<Translation>().Value);
 			ctx.Reply($"<color=yellow>Spectate</color> added to <color=white>{name}</color>");
+		}
+	}
+
+	[Command("ghost", adminOnly: true, description:"Toggles ghost on the target player")]
+	public static void GhostCommand(ChatCommandContext ctx, OnlinePlayer player = null)
+	{
+		var charEntity = player?.Value.CharEntity ?? ctx.Event.SenderCharacterEntity;
+		var userEntity = player?.Value.UserEntity ?? ctx.Event.SenderUserEntity;
+		var name = userEntity.Read<User>().CharacterName;
+
+		if (BuffUtility.TryGetBuff(Core.EntityManager, charEntity, Prefabs.Admin_Observe_Invisible_Buff, out var ghostBuff))
+		{
+			if (!IsGhost(ghostBuff))
+			{
+				ctx.Reply($"<color=white>{name}</color> is in <color=yellow>Spectate</color> mode. Use .spectate to remove it.");
+				return;
+			}
+			Buffs.RemoveBuff(charEntity, Prefabs.Admin_Observe_Invisible_Buff);
+			ctx.Reply($"<color=yellow>Ghost</color> removed from <color=white>{name}</color>");
+		}
+		else
+		{
+			Buffs.AddBuff(userEntity, charEntity, Prefabs.Admin_Observe_Invisible_Buff, -1);
+			if (BuffUtility.TryGetBuff(Core.EntityManager, charEntity, Prefabs.Admin_Observe_Invisible_Buff, out var buffEntity)
+				&& buffEntity.Has<BuffModificationFlagData>())
+			{
+				var flags = buffEntity.Read<BuffModificationFlagData>();
+				flags.ModificationTypes &= ~(long)BuffModificationTypes.AbilityCastImpair;
+				buffEntity.Write(flags);
+			}
+			ctx.Reply($"<color=yellow>Ghost</color> added to <color=white>{name}</color>");
 		}
 	}
 
@@ -105,8 +152,11 @@ internal class GodCommands
 				var batVision = Core.BoostedPlayerService.HasBatVision(charEntity);
 				var noAggro = Core.BoostedPlayerService.HasNoAggro(charEntity);
 				var noBlooddrain = Core.BoostedPlayerService.HasNoBlooddrain(charEntity);
+				var noCrowdControl = Core.BoostedPlayerService.HasNoCrowdControl(charEntity);
 				var noCooldown = Core.BoostedPlayerService.HasNoCooldown(charEntity);
 				var noDurability = Core.BoostedPlayerService.HasNoDurability(charEntity);
+				var noHeightCorrection = Core.BoostedPlayerService.HasNoHeightCorrection(charEntity);
+				var noMapCollision = Core.BoostedPlayerService.HasNoMapCollision(charEntity);
 				var immaterial = Core.BoostedPlayerService.IsPlayerImmaterial(charEntity);
 				var invincible = Core.BoostedPlayerService.IsPlayerInvincible(charEntity);
 				var shrouded = Core.BoostedPlayerService.IsPlayerShrouded(charEntity);
@@ -130,10 +180,16 @@ internal class GodCommands
 					flags.Add("<color=white>No Aggro</color>");
 				if(noBlooddrain)
 					flags.Add("<color=white>No Blooddrain</color>");
+				if(noCrowdControl)
+					flags.Add("<color=white>No Crowd Control</color>");
 				if(noCooldown)
 					flags.Add("<color=white>No Cooldown</color>");
 				if(noDurability)
 					flags.Add("<color=white>No Durability Loss</color>");
+				if (noHeightCorrection)
+					flags.Add("<color=white>No Height Correction</color>");
+				if (noMapCollision)
+					flags.Add("<color=white>No Map Collision</color>");
 				if(immaterial)
 					flags.Add("<color=white>Immaterial</color>");
 				if(invincible)
@@ -352,6 +408,23 @@ internal class GodCommands
 			Core.BoostedPlayerService.UpdateBoostedPlayer(charEntity);
 		}
 
+		[Command("nocrowdcontrol", "ncc", adminOnly: true)]
+		public static void NoCrowdControl(ChatCommandContext ctx, OnlinePlayer player = null)
+		{
+			var name = player?.Value.UserEntity.Read<User>().CharacterName ?? ctx.Event.User.CharacterName;
+			var charEntity = player?.Value.CharEntity ?? ctx.Event.SenderCharacterEntity;
+
+			if (Core.BoostedPlayerService.ToggleNoCrowdControl(charEntity))
+			{
+				ctx.Reply($"No crowd control added to <color=white>{name}</color>");
+			}
+			else
+			{
+				ctx.Reply($"No crowd control removed from <color=white>{name}</color>");
+			}
+			Core.BoostedPlayerService.UpdateBoostedPlayer(charEntity);
+		}
+
 		[Command("nocooldown", "nc", adminOnly: true)]
 		public static void NoCooldown(ChatCommandContext ctx, OnlinePlayer player = null)
 		{
@@ -382,6 +455,40 @@ internal class GodCommands
 			else
 			{
 				ctx.Reply($"No durability loss removed from <color=white>{name}</color>");
+			}
+			Core.BoostedPlayerService.UpdateBoostedPlayer(charEntity);
+		}
+
+		[Command("noheightcorrection", "nhc", adminOnly: true)]
+		public static void NoHeightCorrection(ChatCommandContext ctx, OnlinePlayer player = null)
+		{
+			var name = player?.Value.UserEntity.Read<User>().CharacterName ?? ctx.Event.User.CharacterName;
+			var charEntity = player?.Value.CharEntity ?? ctx.Event.SenderCharacterEntity;
+
+			if (Core.BoostedPlayerService.ToggleNoHeightCorrection(charEntity))
+			{
+				ctx.Reply($"No height correction added to <color=white>{name}</color>");
+			}
+			else
+			{
+				ctx.Reply($"No height correction removed from <color=white>{name}</color>");
+			}
+			Core.BoostedPlayerService.UpdateBoostedPlayer(charEntity);
+		}
+
+		[Command("nomapcollision", "nmc", adminOnly: true)]
+		public static void NoMapCollision(ChatCommandContext ctx, OnlinePlayer player = null)
+		{
+			var name = player?.Value.UserEntity.Read<User>().CharacterName ?? ctx.Event.User.CharacterName;
+			var charEntity = player?.Value.CharEntity ?? ctx.Event.SenderCharacterEntity;
+
+			if (Core.BoostedPlayerService.ToggleNoMapCollision(charEntity))
+			{
+				ctx.Reply($"No map collision added to <color=white>{name}</color>");
+			}
+			else
+			{
+				ctx.Reply($"No map collision removed from <color=white>{name}</color>");
 			}
 			Core.BoostedPlayerService.UpdateBoostedPlayer(charEntity);
 		}
