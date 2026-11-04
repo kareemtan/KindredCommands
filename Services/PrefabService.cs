@@ -17,7 +17,7 @@ internal class PrefabService
 		collectionSystem = Core.Server.GetExistingSystemManaged<PrefabCollectionSystem>();
 
 		var allPrefabs = collectionSystem._PrefabGuidToEntityMap;
-		Core.Log.LogDebug($"All prefabs: {allPrefabs.Count}");
+		Core.Log.LogDebug($"All prefabs: {allPrefabs.Count()}");
 		foreach (var kvp in allPrefabs)
 		{
 			var name = collectionSystem._PrefabLookupMap.GetName(kvp.Key);

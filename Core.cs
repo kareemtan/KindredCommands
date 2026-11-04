@@ -114,7 +114,7 @@ internal static class Core
 		{
 			var go = new GameObject("KindredCommands");
 			monoBehaviour = go.AddComponent<IgnorePhysicsDebugSystem>();
-			Object.DontDestroyOnLoad(go);
+			UnityEngine.Object.DontDestroyOnLoad(go);
 		}
 
 		return monoBehaviour.StartCoroutine(routine.WrapToIl2Cpp());

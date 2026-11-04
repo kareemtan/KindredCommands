@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
+  <Import Project="D:\DcDevelopSoftware\VRising\VRising_Props\VRising.Server.props" />
+
+  <PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<AssemblyName>KindredCommands</AssemblyName>
 		<Description>Commands to expand Administration efforts and provide information</Description>
@@ -25,226 +27,26 @@
 		<EmbeddedResource Include="Data\PrefabNames.json" />
 		<EmbeddedResource Include="LICENSE.txt" />
 	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-		<PackageReference Include="VRising.VampireCommandFramework" Version="0.11.*" />
-		<PackageReference Include="System.Text.Json" Version="6.0.11" />
-	</ItemGroup>
+  <!-- ==================== BepInEx Begin ==================== -->
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.733" IncludeAssets="compile" />
+    <PackageReference Include="BepInEx.Core" Version="6.0.0-be.733" IncludeAssets="compile" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.1.0" />
+  </ItemGroup>
+  <!-- ==================== BepInEx   End ==================== -->
 
+  <!-- ==================== VRising Reference Begin ==================== -->
+  <ItemGroup>
+    <PackageReference Include="VRising.Ascension.Unhollowed.Client" Version="1.1.13" />
+    <Reference Include="VRising.VampireCommandFramework" HintPath="$(VRisingReferenceModDir)\VampireCommandFramework\VampireCommandFramework.dll" />
+    <Reference Include="HookDOTS" HintPath="$(VRisingReferenceModDir)\HookDOTS\HookDOTS.API.dll" />
+    <Reference Include="Bloodpebble" HintPath="$(VRisingReferenceModDir)\Bloodpebble\VRA.Bloodpebble.dll" />
+  </ItemGroup>
+  <!-- ==================== VRising Reference   End ==================== -->
 
-	<ItemGroup>
-		<Reference Include="Backtrace.Unity" HintPath="$(VRisingServerPath)/BepInEx/interop/Backtrace.Unity.dll" Private="False" />
-		<Reference Include="com.rlabrecque.steamworks.net" HintPath="$(VRisingServerPath)/BepInEx/interop/com.rlabrecque.steamworks.net.dll" Private="False" />
-		<Reference Include="com.stunlock.network.eos" HintPath="$(VRisingServerPath)/BepInEx/interop/com.stunlock.network.eos.dll" Private="False" />
-		<Reference Include="com.stunlock.platform" HintPath="$(VRisingServerPath)/BepInEx/interop/com.stunlock.platform.dll" Private="False" />
-		<Reference Include="com.stunlock.platform.pc" HintPath="$(VRisingServerPath)/BepInEx/interop/com.stunlock.platform.pc.dll" Private="False" />
-		<Reference Include="Il2CppMono.Security" HintPath="$(VRisingServerPath)/BepInEx/interop/Il2CppMono.Security.dll" Private="False" />
-		<Reference Include="Il2Cppmscorlib" HintPath="$(VRisingServerPath)/BepInEx/interop/Il2Cppmscorlib.dll" Private="False" />
-		<Reference Include="Il2CppSystem.Configuration" HintPath="$(VRisingServerPath)/BepInEx/interop/Il2CppSystem.Configuration.dll" Private="False" />
-		<Reference Include="Il2CppSystem.Core" HintPath="$(VRisingServerPath)/BepInEx/interop/Il2CppSystem.Core.dll" Private="False" />
-		<Reference Include="Il2CppSystem.Data" HintPath="$(VRisingServerPath)/BepInEx/interop/Il2CppSystem.Data.dll" Private="False" />
-		<Reference Include="Il2CppSystem" HintPath="$(VRisingServerPath)/BepInEx/interop/Il2CppSystem.dll" Private="False" />
-		<Reference Include="Il2CppSystem.Drawing" HintPath="$(VRisingServerPath)/BepInEx/interop/Il2CppSystem.Drawing.dll" Private="False" />
-		<Reference Include="Il2CppSystem.Net.Http" HintPath="$(VRisingServerPath)/BepInEx/interop/Il2CppSystem.Net.Http.dll" Private="False" />
-		<Reference Include="Il2CppSystem.Numerics" HintPath="$(VRisingServerPath)/BepInEx/interop/Il2CppSystem.Numerics.dll" Private="False" />
-		<Reference Include="Il2CppSystem.Runtime.CompilerServices.Unsafe" HintPath="$(VRisingServerPath)/BepInEx/interop/Il2CppSystem.Runtime.CompilerServices.Unsafe.dll" Private="False" />
-		<Reference Include="Il2CppSystem.Runtime.Serialization" HintPath="$(VRisingServerPath)/BepInEx/interop/Il2CppSystem.Runtime.Serialization.dll" Private="False" />
-		<Reference Include="Il2CppSystem.Xml" HintPath="$(VRisingServerPath)/BepInEx/interop/Il2CppSystem.Xml.dll" Private="False" />
-		<Reference Include="Il2CppSystem.Xml.Linq" HintPath="$(VRisingServerPath)/BepInEx/interop/Il2CppSystem.Xml.Linq.dll" Private="False" />
-		<Reference Include="Lidgren.Network" HintPath="$(VRisingServerPath)/BepInEx/interop/Lidgren.Network.dll" Private="False" />
-		<Reference Include="MagicaCloth" HintPath="$(VRisingServerPath)/BepInEx/interop/MagicaCloth.dll" Private="False" />
-		<Reference Include="Malee.ReorderableList" HintPath="$(VRisingServerPath)/BepInEx/interop/Malee.ReorderableList.dll" Private="False" />
-		<Reference Include="Newtonsoft.Json" HintPath="$(VRisingServerPath)/BepInEx/interop/Newtonsoft.Json.dll" Private="False" />
-		<Reference Include="ProjectM.Behaviours" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Behaviours.dll" Private="False" />
-		<Reference Include="ProjectM.Camera" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Camera.dll" Private="False" />
-		<Reference Include="ProjectM.CastleBuilding.Systems" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.CastleBuilding.Systems.dll" Private="False" />
-		<Reference Include="ProjectM.CastleDyeSystem" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.CastleDyeSystem.dll" Private="False" />
-		<Reference Include="ProjectM.CodeGeneration" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.CodeGeneration.dll" Private="False" />
-		<Reference Include="ProjectM.Conversion" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Conversion.dll" Private="False" />
-		<Reference Include="ProjectM" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.dll" Private="False" />
-		<Reference Include="ProjectM.DualsensePC" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.DualsensePC.dll" Private="False" />
-		<Reference Include="ProjectM.Editor.SampleHandler" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Editor.SampleHandler.dll" Private="False" />
-		<Reference Include="ProjectM.Gameplay.Scripting" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Gameplay.Scripting.dll" Private="False" />
-		<Reference Include="ProjectM.Gameplay.Systems" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Gameplay.Systems.dll" Private="False" />
-		<Reference Include="ProjectM.GeneratedNetCode" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.GeneratedNetCode.dll" Private="False" />
-		<Reference Include="ProjectM.Haptics" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Haptics.dll" Private="False" />
-		<Reference Include="ProjectM.HUD" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.HUD.dll" Private="False" />
-		<Reference Include="ProjectM.Hybrid.Performance" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Hybrid.Performance.dll" Private="False" />
-		<Reference Include="ProjectM.LiveBuildPerformanceTests.GlowingVampire" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.LiveBuildPerformanceTests.GlowingVampire.dll" Private="False" />
-		<Reference Include="ProjectM.LiveBuildPerformanceTests.Utilities" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.LiveBuildPerformanceTests.Utilities.dll" Private="False" />
-		<Reference Include="ProjectM.Misc.Systems" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Misc.Systems.dll" Private="False" />
-		<Reference Include="ProjectM.Pathfinding" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Pathfinding.dll" Private="False" />
-		<Reference Include="ProjectM.PerformanceTests.Editor" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.PerformanceTests.Editor.dll" Private="False" />
-		<Reference Include="ProjectM.Presentation.Systems" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Presentation.Systems.dll" Private="False" />
-		<Reference Include="ProjectM.Roofs" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Roofs.dll" Private="False" />
-		<Reference Include="ProjectM.ScriptableSystems" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.ScriptableSystems.dll" Private="False" />
-		<Reference Include="ProjectM.Shared.ColorData" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Shared.ColorData.dll" Private="False" />
-		<Reference Include="ProjectM.Shared" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Shared.dll" Private="False" />
-		<Reference Include="ProjectM.Shared.Systems" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Shared.Systems.dll" Private="False" />
-		<Reference Include="ProjectM.Steam" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Steam.dll" Private="False" />
-		<Reference Include="ProjectM.Terrain" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Terrain.dll" Private="False" />
-		<Reference Include="ProjectM.VFXRendererUtility" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.VFXRendererUtility.dll" Private="False" />
-		<Reference Include="ProjectM.Wind.Shared" HintPath="$(VRisingServerPath)/BepInEx/interop/ProjectM.Wind.Shared.dll" Private="False" />
-		<Reference Include="RCONServerLib" HintPath="$(VRisingServerPath)/BepInEx/interop/RCONServerLib.dll" Private="False" />
-		<Reference Include="RootMotion" HintPath="$(VRisingServerPath)/BepInEx/interop/RootMotion.dll" Private="False" />
-		<Reference Include="RTLTMPro" HintPath="$(VRisingServerPath)/BepInEx/interop/RTLTMPro.dll" Private="False" />
-		<Reference Include="Rukhanka.DebugDrawer" HintPath="$(VRisingServerPath)/BepInEx/interop/Rukhanka.DebugDrawer.dll" Private="False" />
-		<Reference Include="Rukhanka.Hybrid" HintPath="$(VRisingServerPath)/BepInEx/interop/Rukhanka.Hybrid.dll" Private="False" />
-		<Reference Include="Rukhanka.Runtime" HintPath="$(VRisingServerPath)/BepInEx/interop/Rukhanka.Runtime.dll" Private="False" />
-		<Reference Include="Rukhanka.Toolbox" HintPath="$(VRisingServerPath)/BepInEx/interop/Rukhanka.Toolbox.dll" Private="False" />
-		<Reference Include="Sequencer" HintPath="$(VRisingServerPath)/BepInEx/interop/Sequencer.dll" Private="False" />
-		<Reference Include="Stunlock.Animation.StunCloth.Runtime" HintPath="$(VRisingServerPath)/BepInEx/interop/Stunlock.Animation.StunCloth.Runtime.dll" Private="False" />
-		<Reference Include="Stunlock.Console" HintPath="$(VRisingServerPath)/BepInEx/interop/Stunlock.Console.dll" Private="False" />
-		<Reference Include="Stunlock.ContentTests" HintPath="$(VRisingServerPath)/BepInEx/interop/Stunlock.ContentTests.dll" Private="False" />
-		<Reference Include="Stunlock.Core.Animation" HintPath="$(VRisingServerPath)/BepInEx/interop/Stunlock.Core.Animation.dll" Private="False" />
-		<Reference Include="Stunlock.Core" HintPath="$(VRisingServerPath)/BepInEx/interop/Stunlock.Core.dll" Private="False" />
-		<Reference Include="Stunlock.Fmod" HintPath="$(VRisingServerPath)/BepInEx/interop/Stunlock.Fmod.dll" Private="False" />
-		<Reference Include="Stunlock.Localization" HintPath="$(VRisingServerPath)/BepInEx/interop/Stunlock.Localization.dll" Private="False" />
-		<Reference Include="Stunlock.Metrics" HintPath="$(VRisingServerPath)/BepInEx/interop/Stunlock.Metrics.dll" Private="False" />
-		<Reference Include="Stunlock.Network" HintPath="$(VRisingServerPath)/BepInEx/interop/Stunlock.Network.dll" Private="False" />
-		<Reference Include="Stunlock.Network.EosSdk" HintPath="$(VRisingServerPath)/BepInEx/interop/Stunlock.Network.EosSdk.dll" Private="False" />
-		<Reference Include="Stunlock.Network.Lidgren" HintPath="$(VRisingServerPath)/BepInEx/interop/Stunlock.Network.Lidgren.dll" Private="False" />
-		<Reference Include="Stunlock.Network.Steam" HintPath="$(VRisingServerPath)/BepInEx/interop/Stunlock.Network.Steam.dll" Private="False" />
-		<Reference Include="Stunlock.Tools" HintPath="$(VRisingServerPath)/BepInEx/interop/Stunlock.Tools.dll" Private="False" />
-		<Reference Include="Unity.Burst" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Burst.dll" Private="False" />
-		<Reference Include="Unity.Burst.Unsafe" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Burst.Unsafe.dll" Private="False" />
-		<Reference Include="Unity.Collections" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Collections.dll" Private="False" />
-		<Reference Include="Unity.Collections.LowLevel.ILSupport" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Collections.LowLevel.ILSupport.dll" Private="False" />
-		<Reference Include="Unity.Deformations" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Deformations.dll" Private="False" />
-		<Reference Include="Unity.Entities" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Entities.dll" Private="False" />
-		<Reference Include="Unity.Entities.Graphics" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Entities.Graphics.dll" Private="False" />
-		<Reference Include="Unity.Entities.Hybrid" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Entities.Hybrid.dll" Private="False" />
-		<Reference Include="Unity.Entities.Hybrid.HybridComponents" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Entities.Hybrid.HybridComponents.dll" Private="False" />
-		<Reference Include="Unity.InputSystem" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.InputSystem.dll" Private="False" />
-		<Reference Include="Unity.InputSystem.ForUI" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.InputSystem.ForUI.dll" Private="False" />
-		<Reference Include="Unity.Mathematics" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Mathematics.dll" Private="False" />
-		<Reference Include="Unity.Mathematics.Extensions" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Mathematics.Extensions.dll" Private="False" />
-		<Reference Include="Unity.Mathematics.Extensions.Hybrid" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Mathematics.Extensions.Hybrid.dll" Private="False" />
-		<Reference Include="Unity.MemoryProfiler" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.MemoryProfiler.dll" Private="False" />
-		<Reference Include="Unity.Physics" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Physics.dll" Private="False" />
-		<Reference Include="Unity.Physics.Hybrid" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Physics.Hybrid.dll" Private="False" />
-		<Reference Include="Unity.Profiling.Core" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Profiling.Core.dll" Private="False" />
-		<Reference Include="Unity.RenderPipelines.Core.Runtime" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.RenderPipelines.Core.Runtime.dll" Private="False" />
-		<Reference Include="Unity.RenderPipelines.HighDefinition.Config.Runtime" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.RenderPipelines.HighDefinition.Config.Runtime.dll" Private="False" />
-		<Reference Include="Unity.RenderPipelines.HighDefinition.Runtime" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.RenderPipelines.HighDefinition.Runtime.dll" Private="False" />
-		<Reference Include="Unity.Scenes" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Scenes.dll" Private="False" />
-		<Reference Include="Unity.Serialization" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Serialization.dll" Private="False" />
-		<Reference Include="Unity.TextMeshPro" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.TextMeshPro.dll" Private="False" />
-		<Reference Include="Unity.Transforms" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Transforms.dll" Private="False" />
-		<Reference Include="Unity.Transforms.Hybrid" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.Transforms.Hybrid.dll" Private="False" />
-		<Reference Include="Unity.VisualEffectGraph.Runtime" HintPath="$(VRisingServerPath)/BepInEx/interop/Unity.VisualEffectGraph.Runtime.dll" Private="False" />
-		<Reference Include="UnityEngine.AccessibilityModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.AccessibilityModule.dll" Private="False" />
-		<Reference Include="UnityEngine.AIModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.AIModule.dll" Private="False" />
-		<Reference Include="UnityEngine.AndroidJNIModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.AndroidJNIModule.dll" Private="False" />
-		<Reference Include="UnityEngine.AnimationModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.AnimationModule.dll" Private="False" />
-		<Reference Include="UnityEngine.AssetBundleModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.AssetBundleModule.dll" Private="False" />
-		<Reference Include="UnityEngine.AudioModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.AudioModule.dll" Private="False" />
-		<Reference Include="UnityEngine.ClothModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.ClothModule.dll" Private="False" />
-		<Reference Include="UnityEngine.ClusterInputModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.ClusterInputModule.dll" Private="False" />
-		<Reference Include="UnityEngine.ClusterRendererModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.ClusterRendererModule.dll" Private="False" />
-		<Reference Include="UnityEngine.ContentLoadModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.ContentLoadModule.dll" Private="False" />
-		<Reference Include="UnityEngine.CoreModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.CoreModule.dll" Private="False" />
-		<Reference Include="UnityEngine.CrashReportingModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.CrashReportingModule.dll" Private="False" />
-		<Reference Include="UnityEngine.DirectorModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.DirectorModule.dll" Private="False" />
-		<Reference Include="UnityEngine" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.dll" Private="False" />
-		<Reference Include="UnityEngine.DSPGraphModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.DSPGraphModule.dll" Private="False" />
-		<Reference Include="UnityEngine.GameCenterModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.GameCenterModule.dll" Private="False" />
-		<Reference Include="UnityEngine.GIModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.GIModule.dll" Private="False" />
-		<Reference Include="UnityEngine.GridModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.GridModule.dll" Private="False" />
-		<Reference Include="UnityEngine.HotReloadModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.HotReloadModule.dll" Private="False" />
-		<Reference Include="UnityEngine.ImageConversionModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.ImageConversionModule.dll" Private="False" />
-		<Reference Include="UnityEngine.IMGUIModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.IMGUIModule.dll" Private="False" />
-		<Reference Include="UnityEngine.InputLegacyModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.InputLegacyModule.dll" Private="False" />
-		<Reference Include="UnityEngine.InputModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.InputModule.dll" Private="False" />
-		<Reference Include="UnityEngine.JSONSerializeModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.JSONSerializeModule.dll" Private="False" />
-		<Reference Include="UnityEngine.LocalizationModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.LocalizationModule.dll" Private="False" />
-		<Reference Include="UnityEngine.ParticleSystemModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.ParticleSystemModule.dll" Private="False" />
-		<Reference Include="UnityEngine.PerformanceReportingModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.PerformanceReportingModule.dll" Private="False" />
-		<Reference Include="UnityEngine.Physics2DModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.Physics2DModule.dll" Private="False" />
-		<Reference Include="UnityEngine.PhysicsModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.PhysicsModule.dll" Private="False" />
-		<Reference Include="UnityEngine.ProfilerModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.ProfilerModule.dll" Private="False" />
-		<Reference Include="UnityEngine.PropertiesModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.PropertiesModule.dll" Private="False" />
-		<Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll" Private="False" />
-		<Reference Include="UnityEngine.ScreenCaptureModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.ScreenCaptureModule.dll" Private="False" />
-		<Reference Include="UnityEngine.SharedInternalsModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.SharedInternalsModule.dll" Private="False" />
-		<Reference Include="UnityEngine.SpriteMaskModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.SpriteMaskModule.dll" Private="False" />
-		<Reference Include="UnityEngine.SpriteShapeModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.SpriteShapeModule.dll" Private="False" />
-		<Reference Include="UnityEngine.StreamingModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.StreamingModule.dll" Private="False" />
-		<Reference Include="UnityEngine.SubstanceModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.SubstanceModule.dll" Private="False" />
-		<Reference Include="UnityEngine.SubsystemsModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.SubsystemsModule.dll" Private="False" />
-		<Reference Include="UnityEngine.TerrainModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.TerrainModule.dll" Private="False" />
-		<Reference Include="UnityEngine.TerrainPhysicsModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.TerrainPhysicsModule.dll" Private="False" />
-		<Reference Include="UnityEngine.TextCoreFontEngineModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.TextCoreFontEngineModule.dll" Private="False" />
-		<Reference Include="UnityEngine.TextCoreTextEngineModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.TextCoreTextEngineModule.dll" Private="False" />
-		<Reference Include="UnityEngine.TextRenderingModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.TextRenderingModule.dll" Private="False" />
-		<Reference Include="UnityEngine.TilemapModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.TilemapModule.dll" Private="False" />
-		<Reference Include="UnityEngine.TLSModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.TLSModule.dll" Private="False" />
-		<Reference Include="UnityEngine.UI" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.UI.dll" Private="False" />
-		<Reference Include="UnityEngine.UIElementsModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.UIElementsModule.dll" Private="False" />
-		<Reference Include="UnityEngine.UIModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.UIModule.dll" Private="False" />
-		<Reference Include="UnityEngine.UmbraModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.UmbraModule.dll" Private="False" />
-		<Reference Include="UnityEngine.UnityAnalyticsCommonModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.UnityAnalyticsCommonModule.dll" Private="False" />
-		<Reference Include="UnityEngine.UnityAnalyticsModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.UnityAnalyticsModule.dll" Private="False" />
-		<Reference Include="UnityEngine.UnityConnectModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.UnityConnectModule.dll" Private="False" />
-		<Reference Include="UnityEngine.UnityCurlModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.UnityCurlModule.dll" Private="False" />
-		<Reference Include="UnityEngine.UnityTestProtocolModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.UnityTestProtocolModule.dll" Private="False" />
-		<Reference Include="UnityEngine.UnityWebRequestAssetBundleModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.UnityWebRequestAssetBundleModule.dll" Private="False" />
-		<Reference Include="UnityEngine.UnityWebRequestAudioModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.UnityWebRequestAudioModule.dll" Private="False" />
-		<Reference Include="UnityEngine.UnityWebRequestModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.UnityWebRequestModule.dll" Private="False" />
-		<Reference Include="UnityEngine.UnityWebRequestTextureModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.UnityWebRequestTextureModule.dll" Private="False" />
-		<Reference Include="UnityEngine.UnityWebRequestWWWModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.UnityWebRequestWWWModule.dll" Private="False" />
-		<Reference Include="UnityEngine.VehiclesModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.VehiclesModule.dll" Private="False" />
-		<Reference Include="UnityEngine.VFXModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.VFXModule.dll" Private="False" />
-		<Reference Include="UnityEngine.VideoModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.VideoModule.dll" Private="False" />
-		<Reference Include="UnityEngine.VirtualTexturingModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.VirtualTexturingModule.dll" Private="False" />
-		<Reference Include="UnityEngine.VRModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.VRModule.dll" Private="False" />
-		<Reference Include="UnityEngine.WindModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.WindModule.dll" Private="False" />
-		<Reference Include="UnityEngine.XRModule" HintPath="$(VRisingServerPath)/BepInEx/interop/UnityEngine.XRModule.dll" Private="False" />
-		<Reference Include="VivoxUnity" HintPath="$(VRisingServerPath)/BepInEx/interop/VivoxUnity.dll" Private="False" />
-		<Reference Include="__Generated" HintPath="$(VRisingServerPath)/BepInEx/interop/__Generated.dll" Private="False" />
-	</ItemGroup>
-	<ItemGroup>
-		<Reference Include="0Harmony" HintPath="$(VRisingServerPath)/BepInEx/core/0Harmony.dll" Private="False" />
-		<Reference Include="AsmResolver" HintPath="$(VRisingServerPath)/BepInEx/core/AsmResolver.dll" Private="False" />
-		<Reference Include="AsmResolver.DotNet" HintPath="$(VRisingServerPath)/BepInEx/core/AsmResolver.DotNet.dll" Private="False" />
-		<Reference Include="AsmResolver.PE" HintPath="$(VRisingServerPath)/BepInEx/core/AsmResolver.PE.dll" Private="False" />
-		<Reference Include="AsmResolver.PE.File" HintPath="$(VRisingServerPath)/BepInEx/core/AsmResolver.PE.File.dll" Private="False" />
-		<Reference Include="AssetRipper.CIL" HintPath="$(VRisingServerPath)/BepInEx/core/AssetRipper.CIL.dll" Private="False" />
-		<Reference Include="AssetRipper.Primitives" HintPath="$(VRisingServerPath)/BepInEx/core/AssetRipper.Primitives.dll" Private="False" />
-		<Reference Include="BepInEx.Core" HintPath="$(VRisingServerPath)/BepInEx/core/BepInEx.Core.dll" Private="False" />
-		<Reference Include="BepInEx.Preloader.Core" HintPath="$(VRisingServerPath)/BepInEx/core/BepInEx.Preloader.Core.dll" Private="False" />
-		<Reference Include="BepInEx.Unity.Common" HintPath="$(VRisingServerPath)/BepInEx/core/BepInEx.Unity.Common.dll" Private="False" />
-		<Reference Include="BepInEx.Unity.IL2CPP" HintPath="$(VRisingServerPath)/BepInEx/core/BepInEx.Unity.IL2CPP.dll" Private="False" />
-		<Reference Include="Cpp2IL.Core" HintPath="$(VRisingServerPath)/BepInEx/core/Cpp2IL.Core.dll" Private="False" />
-		<Reference Include="Disarm" HintPath="$(VRisingServerPath)/BepInEx/core/Disarm.dll" Private="False" />
-		<Reference Include="Gee.External.Capstone" HintPath="$(VRisingServerPath)/BepInEx/core/Gee.External.Capstone.dll" Private="False" />
-		<Reference Include="Iced" HintPath="$(VRisingServerPath)/BepInEx/core/Iced.dll" Private="False" />
-		<Reference Include="Il2CppInterop.Common" HintPath="$(VRisingServerPath)/BepInEx/core/Il2CppInterop.Common.dll" Private="False" />
-		<Reference Include="Il2CppInterop.Generator" HintPath="$(VRisingServerPath)/BepInEx/core/Il2CppInterop.Generator.dll" Private="False" />
-		<Reference Include="Il2CppInterop.HarmonySupport" HintPath="$(VRisingServerPath)/BepInEx/core/Il2CppInterop.HarmonySupport.dll" Private="False" />
-		<Reference Include="Il2CppInterop.Runtime" HintPath="$(VRisingServerPath)/BepInEx/core/Il2CppInterop.Runtime.dll" Private="False" />
-		<Reference Include="LibCpp2IL" HintPath="$(VRisingServerPath)/BepInEx/core/LibCpp2IL.dll" Private="False" />
-		<Reference Include="Mono.Cecil" HintPath="$(VRisingServerPath)/BepInEx/core/Mono.Cecil.dll" Private="False" />
-		<Reference Include="Mono.Cecil.Mdb" HintPath="$(VRisingServerPath)/BepInEx/core/Mono.Cecil.Mdb.dll" Private="False" />
-		<Reference Include="Mono.Cecil.Pdb" HintPath="$(VRisingServerPath)/BepInEx/core/Mono.Cecil.Pdb.dll" Private="False" />
-		<Reference Include="Mono.Cecil.Rocks" HintPath="$(VRisingServerPath)/BepInEx/core/Mono.Cecil.Rocks.dll" Private="False" />
-		<Reference Include="MonoMod.Backports" HintPath="$(VRisingServerPath)/BepInEx/core/MonoMod.Backports.dll" Private="False" />
-		<Reference Include="MonoMod.ILHelpers" HintPath="$(VRisingServerPath)/BepInEx/core/MonoMod.ILHelpers.dll" Private="False" />
-		<Reference Include="MonoMod.RuntimeDetour" HintPath="$(VRisingServerPath)/BepInEx/core/MonoMod.RuntimeDetour.dll" Private="False" />
-		<Reference Include="MonoMod.Utils" HintPath="$(VRisingServerPath)/BepInEx/core/MonoMod.Utils.dll" Private="False" />
-		<Reference Include="SemanticVersioning" HintPath="$(VRisingServerPath)/BepInEx/core/SemanticVersioning.dll" Private="False" />
-		<Reference Include="StableNameDotNet" HintPath="$(VRisingServerPath)/BepInEx/core/StableNameDotNet.dll" Private="False" />
-		<Reference Include="WasmDisassembler" HintPath="$(VRisingServerPath)/BepInEx/core/WasmDisassembler.dll" Private="False" />
-	</ItemGroup>
 
 	<PropertyGroup>
 		<NoWarn>NU1605</NoWarn>
 	</PropertyGroup>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="Exists('$(ModsPath)')">
-		<ItemGroup>
-			<ServerDir Include="$([System.IO.Directory]::GetDirectories('$(ModsPath)'))" />
-			<PluginsDir Include="@(ServerDir->'%(Identity)\BepInEx\plugins')" />
-		</ItemGroup>
-		<Copy SourceFiles="$(TargetPath)" DestinationFolder="%(PluginsDir.Identity)" Condition="Exists('%(PluginsDir.Identity)')" ContinueOnError="true" />
-	</Target>
+
 </Project>

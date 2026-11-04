@@ -441,7 +441,7 @@ public static class PlayerCommands
 			return;
 		}
 
-		Buffs.AddBuff(userEntity, charEntity, freezeBuff, -1);
+		Buffs.TryAddBuff(userEntity, charEntity, freezeBuff, -1);
 		if (BuffUtility.TryGetBuff(Core.EntityManager, charEntity, freezeBuff, out var buffEntity))
 		{
 			var flagData = buffEntity.Read<BuffModificationFlagData>();

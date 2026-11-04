@@ -118,7 +118,7 @@ internal class GodCommands
 		}
 		else
 		{
-			Buffs.AddBuff(userEntity, charEntity, Prefabs.Admin_Observe_Invisible_Buff, -1);
+			Buffs.TryAddBuff(userEntity, charEntity, Prefabs.Admin_Observe_Invisible_Buff, -1);
 			if (BuffUtility.TryGetBuff(Core.EntityManager, charEntity, Prefabs.Admin_Observe_Invisible_Buff, out var buffEntity)
 				&& buffEntity.Has<BuffModificationFlagData>())
 			{
